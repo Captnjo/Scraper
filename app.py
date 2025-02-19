@@ -62,6 +62,12 @@ class ScraperUI:
                             st.write(f"Last Scraped: {source['last_scraped']}")
                     with col2:
                         if st.button("Scrape", key=f"scrape_{idx}"):
+                            # Load scraper settings
+                            settings = {}
+                            if os.path.exists("scraper_settings.json"):
+                                with open("scraper_settings.json", 'r') as f:
+                                    settings = json.load(f)
+                                
                             scraper = WebScraper(days_limit=source['days_limit'] if source['days_limit'] > 0 else None)
                             progress_bar = st.progress(0)
                             status = st.empty()
@@ -73,7 +79,14 @@ class ScraperUI:
                                 else:
                                     status.text("Complete!")
                                     
-                            result = scraper.scrape_url(source['url'], progress_callback=update_progress)
+                            # Use settings for recursive scraping
+                            max_depth = settings.get('max_depth', 2) if settings.get('follow_links', False) else 1
+                            result = scraper.scrape_url(
+                                source['url'], 
+                                progress_callback=update_progress,
+                                max_depth=max_depth
+                            )
+                            
                             if result:
                                 source['last_scraped'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                                 self.save_sources()
@@ -112,12 +125,37 @@ class ScraperUI:
         # Settings Tab
         with tab3:
             st.header("Advanced Settings")
-            st.checkbox("Enable JavaScript", value=True, 
+            enable_js = st.checkbox("Enable JavaScript", value=True, 
                 help="Enable JavaScript processing (required for dynamic content)")
-            st.checkbox("Follow Links", value=False, 
+            follow_links = st.checkbox("Follow Links", value=False, 
                 help="Follow and scrape linked pages (for forum posts)")
-            st.number_input("Max Depth", min_value=1, max_value=10, value=2,
+            max_depth = st.number_input("Max Depth", min_value=1, max_value=10, value=2,
                 help="Maximum depth for following links")
+            
+            # Add link filtering options
+            st.subheader("Link Filtering")
+            filter_same_domain = st.checkbox("Stay on Same Domain", value=True,
+                help="Only follow links from the same domain as the source URL")
+            ignored_paths = st.text_input("Ignored Paths (comma-separated)",
+                value="login,logout,signup,register,search",
+                help="Paths to ignore when following links")
+            ignored_extensions = st.text_input("Ignored File Extensions (comma-separated)",
+                value=".css,.js,.png,.jpg,.jpeg,.gif,.pdf",
+                help="File extensions to ignore when following links")
+    
+            # Save settings when changed
+            if st.button("Save Settings"):
+                settings = {
+                    "enable_js": enable_js,
+                    "follow_links": follow_links,
+                    "max_depth": max_depth,
+                    "filter_same_domain": filter_same_domain,
+                    "ignored_paths": ignored_paths.split(','),
+                    "ignored_extensions": ignored_extensions.split(',')
+                }
+                with open("scraper_settings.json", 'w') as f:
+                    json.dump(settings, f)
+                st.success("Settings saved!")
 
 if __name__ == "__main__":
     app = ScraperUI()
