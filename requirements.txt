@@ -8,6 +8,7 @@ charset-normalizer==3.3.2
 click==8.1.7
 distlib==0.3.8
 entrypoints==0.4
+schedule==1.2.2
 exceptiongroup==1.2.0
 filelock==3.13.1
 gitdb==4.0.11

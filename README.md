@@ -12,6 +12,9 @@ A powerful and flexible web scraping tool that supports both single pages and fo
 - User-friendly Streamlit interface
 - Configurable scraping parameters
 - Automatic metadata extraction (source URL, timestamp)
+- Periodic scraping with customizable schedules
+- Enhanced content filtering with custom rules
+- Configurable output directory structure
 
 ## Installation
 
@@ -40,8 +43,10 @@ The interface provides:
 - **Settings**: Customize scraping parameters
   - Time limits for content retrieval
   - Recursive depth for forum scraping
-  - Content filtering options
+  - Content filtering options with custom rules
   - Output format preferences
+  - Periodic scraping schedules
+  - Custom output directory configuration
 
 ## Content Processing
 

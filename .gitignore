@@ -4,6 +4,8 @@ venv/
 __pycache__/
 .DS_Store
 .vscode/
+scraper_config.json
+scraper_settings.json
 
 # Python
 *.py[cod]
