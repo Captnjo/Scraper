@@ -1,6 +1,6 @@
-# Web Scraper with Streamlit UI
+# Web Scraper
 
-A powerful and flexible web scraping tool that supports both single pages and forum content scraping, featuring an intuitive Streamlit interface and advanced content processing capabilities.
+A powerful and flexible web scraping tool that supports both single pages and forum content scraping, featuring an intuitive Streamlit interface and command-line usage for automation needs.
 
 ## Features
 
@@ -9,64 +9,11 @@ A powerful and flexible web scraping tool that supports both single pages and fo
 - Smart content filtering and processing
 - Progress tracking with real-time updates
 - Clean Markdown output format
-- User-friendly Streamlit interface
 - Configurable scraping parameters
 - Automatic metadata extraction (source URL, timestamp)
 - Periodic scraping with customizable schedules
 - Enhanced content filtering with custom rules
 - Configurable output directory structure
-
-## Installation
-
-1. Clone the repository
-2. Create a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate
-   ```
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-## Usage
-
-Launch the Streamlit interface:
-```bash
-streamlit run app.py
-```
-
-The interface provides:
-
-- **Sources Management**: Configure and manage scraping URLs
-- **Library**: Browse, search, and download scraped content
-- **Settings**: Customize scraping parameters
-  - Time limits for content retrieval
-  - Recursive depth for forum scraping
-  - Content filtering options with custom rules
-  - Output format preferences
-  - Periodic scraping schedules
-  - Custom output directory configuration
-
-## Content Processing
-
-- Automatic content extraction and cleaning
-- Metadata preservation (source URL, timestamp)
-- Structured output in Markdown format
-- Smart duplicate detection
-- Error handling and retry mechanisms
-
-## Output
-
-Scraped content is saved in the `scraped_data` directory in markdown format, following the naming convention:
-`domain_timestamp.md`
-
-Example output structure:
-```
-scraped_data/
-  ├── example.com_20250219_112559.md
-  └── forum.com_20250219_113022.md
-```
 
 ## Requirements
 
@@ -74,12 +21,62 @@ scraped_data/
 - Chrome/Chromium browser
 - Required Python packages (specified in requirements.txt)
 
-## Error Handling
+## Streamlit Interface
 
-- Automatic retry for failed requests
-- Detailed error logging
-- Graceful failure recovery
-- Session persistence
+The Streamlit interface provides a user-friendly way to manage and monitor scraping tasks.
+
+### Starting the Interface
+
+Launch the Streamlit interface with:
+```bash
+streamlit run app.py
+```
+
+### Features
+
+- **Sources Management**
+  - Add and manage scraping URLs
+  - Configure scraping intervals
+  - Set content age limits
+
+- **Library**
+  - Browse scraped content
+  - Search through collected data
+  - Download content in Markdown format
+
+- **Settings**
+  - Time limits for content retrieval
+  - Recursive depth for forum scraping
+  - Content filtering options
+  - Output format preferences
+  - Periodic scraping schedules
+  - Custom output directory configuration
+
+## Command Line Interface
+
+The command-line interface is ideal for automation and scripting needs.
+
+### Usage
+
+```bash
+python main.py [options]
+```
+
+### Options
+
+- `--depth DEPTH`: Maximum depth for recursive scraping (default: 2)
+- `--days DAYS`: Number of days to limit scraping (default: 7, 0 for no limit)
+- `--wait WAIT`: Wait time between requests in seconds (default: 2)
+
+### Example
+
+```bash
+# Scrape with default settings
+python main.py
+
+# Scrape with custom settings
+python main.py --depth 3 --days 14 --wait 5
+```
 
 ## Performance
 
@@ -87,3 +84,15 @@ scraped_data/
 - Concurrent scraping capabilities
 - Rate limiting to respect server limits
 - Progress tracking for long-running operations
+
+## Output
+
+Scraped content is saved in Markdown format with:
+- Clear content hierarchy
+- Source URL and timestamp
+- Cleaned and formatted text
+- Organized file structure
+
+## Note
+
+Please use this tool responsibly and in accordance with the terms of service of the websites you're scraping.
