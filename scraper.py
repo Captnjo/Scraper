@@ -6,10 +6,10 @@ from urllib.parse import urlparse
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
+import platform
 
 class WebScraper:
     def __init__(self, output_dir="scraped_data", days_limit=7):
@@ -35,6 +35,8 @@ class WebScraper:
             # Try to locate Chrome binary
             chrome_paths = [
                 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",  # macOS
+                "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome Beta",  # macOS Beta
+                "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome Canary",  # macOS Canary
                 "/usr/bin/google-chrome",  # Linux
                 "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",  # Windows
                 "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"  # Windows x86
@@ -44,25 +46,29 @@ class WebScraper:
             for path in chrome_paths:
                 if os.path.exists(path):
                     chrome_binary = path
+                    print(f"Found Chrome binary at: {path}")
                     break
                     
             if chrome_binary:
                 chrome_options.binary_location = chrome_binary
             else:
-                raise Exception("Chrome browser not found. Please install Google Chrome.")
+                print("Warning: Chrome browser not found in standard locations.")
+                print("Attempting to continue without specifying binary location...")
             
-            # Initialize Chrome service with ChromeDriverManager
-            service = Service(ChromeDriverManager().install())
-            
-            # Initialize WebDriver with extended page load timeout
+            # Set up Chrome WebDriver using Selenium Manager
+            service = Service()
             self.driver = webdriver.Chrome(service=service, options=chrome_options)
             self.driver.set_page_load_timeout(30)
-            
+            print("Chrome WebDriver initialized successfully")
+                
         except Exception as e:
             print(f"Failed to initialize Chrome WebDriver: {str(e)}")
             print("Please ensure Chrome browser is installed and up to date.")
+            print("You may need to manually install ChromeDriver or update Chrome.")
             self.driver = None
-
+        except Exception as e:
+            print(f"Error setting up Chrome options: {str(e)}")
+            self.driver = None
     def __del__(self):
         if hasattr(self, 'driver'):
             self.driver.quit()
